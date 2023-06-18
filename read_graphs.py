@@ -27,7 +27,7 @@ def read_graph(file, matrix):
 
 # Example usage
 matrix = []
-with open("g1.A00", "rb") as file:
+with open("iso_m3Dr2_s27.B01", "rb") as file:
     num_nodes = read_graph(file, matrix)
     print("Number of nodes:", num_nodes)
     print("Adjacency matrix:")
@@ -35,71 +35,72 @@ with open("g1.A00", "rb") as file:
         for j in range(num_nodes):
             print(matrix[i][j], end=" ")
         print()
-# g1 = Graph(20)
-# g1.graph = matrix
 
-# matrix = []
-# with open("g2.B00", "rb") as file:
-#     num_nodes = read_graph(file, matrix)
+g1 = Graph(27)
+g1.graph = matrix
 
-# g2 = Graph(20)
-# g2.graph = matrix
+matrix = []
+with open("iso_m3Dr2_s27.B01", "rb") as file:
+    num_nodes = read_graph(file, matrix)
 
-# test_cases = {
-#     1:  (g1,   g2),
-# }
+g2 = Graph(27)
+g2.graph = matrix
 
-# test_cases2 = {
-#     'esparsos': [4, 5],
-#     'densos': [6, 7],
-#     'regulares': [8, 9],
-#     'aleatorios': [10,11]
-# }
+test_cases = {
+    1:  (g1,   g1),
+}
 
-# def test(g1, g2, n):
-#     start_time = time.time()
-#     if g1.is_isomorphic(g2):
-#         print(f"------------------------------------------------------\nCaso de Teste {n}: \nOs grafos são isomorfos")
-#     else:
-#         print(f"------------------------------------------------------\nCaso de Teste {n}: \nOs grafos não são isomorfos")
+test_cases2 = {
+    'esparsos': [4, 5],
+    'densos': [6, 7],
+    'regulares': [8, 9],
+    'aleatorios': [10,11]
+}
 
-#     end_time = time.time()
+def test(g1, g2, n):
+    start_time = time.time()
+    if g1.is_isomorphic(g2):
+        print(f"------------------------------------------------------\nCaso de Teste {n}: \nOs grafos são isomorfos")
+    else:
+        print(f"------------------------------------------------------\nCaso de Teste {n}: \nOs grafos não são isomorfos")
 
-#     if n in test_cases2['esparsos']:
-#         print(f"Os grafos são esparsos com {g1.V} vértices")
+    end_time = time.time()
 
-#     elif n in test_cases2['densos']:
-#         print(f"Os grafos são densos com {g1.V} vértices")
+    if n in test_cases2['esparsos']:
+        print(f"Os grafos são esparsos com {g1.V} vértices")
 
-#     elif n in test_cases2['regulares']:
-#         print(f"Os grafos são regulares com {g1.V} vértices")
+    elif n in test_cases2['densos']:
+        print(f"Os grafos são densos com {g1.V} vértices")
 
-#     else:
-#         print(f"Os grafos têm {g1.V} vértices")
+    elif n in test_cases2['regulares']:
+        print(f"Os grafos são regulares com {g1.V} vértices")
 
-#     print("Tempo de execução em ms: ", (end_time - start_time)*1000)
+    else:
+        print(f"Os grafos têm {g1.V} vértices")
+
+    print("Tempo de execução em ms: ", (end_time - start_time)*1000)
 
 
-# def run_tests(tests=None):
-#     if tests == "":
-#         for i in test_cases:
-#             run_tests(i)
+def run_tests(tests=None):
+    if tests == "":
+        for i in test_cases:
+            run_tests(i)
 
-#     elif tests in test_cases2:
-#         for i in test_cases2[tests]:
-#             run_tests(i)
+    elif tests in test_cases2:
+        for i in test_cases2[tests]:
+            run_tests(i)
 
-#     elif type(tests) == int:
-#         g1, g2 = test_cases[tests]
-#         test(g1, g2, tests)
+    elif type(tests) == int:
+        g1, g2 = test_cases[tests]
+        test(g1, g2, tests)
     
-#     elif tests.isnumeric():
-#         g1, g2 = test_cases[int(tests)]
-#         test(g1, g2, tests)
+    elif tests.isnumeric():
+        g1, g2 = test_cases[int(tests)]
+        test(g1, g2, tests)
      
-#     else:
-#         print("argumento invalido")
+    else:
+        print("argumento invalido")
 
 
-# tests = sys.argv[1] if len(sys.argv) == 2 else ""
-# run_tests(tests)
+tests = sys.argv[1] if len(sys.argv) == 2 else ""
+run_tests(tests)
