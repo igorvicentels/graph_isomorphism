@@ -1,3 +1,42 @@
+def is_isomorphic(adj_matrix1, adj_matrix2):
+    if len(adj_matrix1) != len(adj_matrix2):
+        return False
+    
+    n = len(adj_matrix1)
+    m = len(adj_matrix2)
+    mapping = [-1] * n
+    visited = [False] * m
+    
+    return backtrack(adj_matrix1, adj_matrix2, mapping, visited, 0)
+
+def backtrack(adj_matrix1, adj_matrix2, mapping, visited, depth):
+    if depth == len(adj_matrix1):
+        return True
+    
+    u = depth
+    for v in range(len(adj_matrix2)):
+        if is_valid_mapping(adj_matrix1, adj_matrix2, mapping, u, v):
+            mapping[u] = v
+            visited[v] = True
+            
+            if backtrack(adj_matrix1, adj_matrix2, mapping, visited, depth + 1):
+                return True
+            
+            mapping[u] = -1
+            visited[v] = False
+    
+    return False
+
+def is_valid_mapping(adj_matrix1, adj_matrix2, mapping, u, v):
+    if adj_matrix1[u] != adj_matrix2[v]:
+        return False
+    
+    for i in range(len(adj_matrix1)):
+        if adj_matrix1[u][i] and not adj_matrix2[v][mapping[i]]:
+            return False
+    
+    return True
+
 import struct
 import sys
 from canonical import *
@@ -52,7 +91,7 @@ test_cases2 = {
 
 def test(g1, g2, n):
     start_time = time.time()
-    if isomorphic(g1, g2):
+    if is_isomorphic(g1, g2):
         print(f"------------------------------------------------------\nCaso de Teste {n}: \nOs grafos são isomorfos")
     else:
         print(f"------------------------------------------------------\nCaso de Teste {n}: \nOs grafos não são isomorfos")
