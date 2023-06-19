@@ -63,9 +63,6 @@ class Graph:
         return False
 
     def is_isomorphic(self, g2):
-        print(self.graph)
-        print()
-        print(g2.graph)
         # Verifica se dois grafos são isomorfos
         if self.V != g2.V:
             return False
