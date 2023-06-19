@@ -29,13 +29,13 @@ def read_graph(file, matrix):
 
 # Example usage
 matrix1 = []
-with open("iso_m3Dr2_s64.A02", "rb") as file:
+with open("data/iso_m3Dr2_s27.A00", "rb") as file:
     num_nodes = read_graph(file, matrix1)
 
 g1 = matrix1
 
 matrix2 = []
-with open("iso_m3Dr2_s64.B02", "rb") as file:
+with open("data/iso_m3Dr2_s27.B02", "rb") as file:
     num_nodes = read_graph(file, matrix2)
 
 g2 = matrix2
@@ -53,7 +53,6 @@ test_cases2 = {
 
 def test(g1, g2, n):
     start_time = time.time()
-
     if is_isomorphic(g1, g2):
         print(f"------------------------------------------------------\nCaso de Teste {n}: \nOs grafos são isomorfos")
     else:
