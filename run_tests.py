@@ -148,13 +148,17 @@ for i in range(2):
         g = []
 
 
-def test(g1, g2, n):
+def test(g1, g2, n, label=None):
     start_time = time.time()
     is_iso = is_isomorphic(g1, g2)
     if  is_iso:
         print(f"------------------------------------------------------\nCaso de Teste {n}: \nOs grafos são isomorfos")
+        if label:
+            print(label)
     else:
         print(f"------------------------------------------------------\nCaso de Teste {n}: \nOs grafos não são isomorfos")
+        if label:
+            print(label)
 
     end_time = time.time()
 
@@ -163,8 +167,9 @@ def test(g1, g2, n):
     return [end_time - start_time, True if is_iso else False]
 
 test_cases = {
-    "isomorfos": ["g27", "g64", "g125", "g216", "g343", "g512", "g729"],
-    "nao isomorfos": ["g27n", "g64n", "g125n", "g216n", "g343n", "g512n", "g729n"]
+    "isomorfos": ["g27", "g64", "g125", "g216", "g343", "g512", "g729", "generate100"],
+    "nao isomorfos": ["g27n", "g64n", "g125n", "g216n", "g343n", "g512n", "g729n"],
+    "gerados": ["generate32", "generate64", "generate128", "generate256", "generate512"],
 }
 
 info = {
@@ -182,20 +187,30 @@ info = {
     "g343n": {},
     "g512n": {},
     "g729n": {},
+    "generate32": {},
+    "generate64": {},
+    "generate128": {},
+    "generate256": {},
+    "generate512": {},
 }
 
 def run_tests(tests):
     if tests == "isomorfos":
         for i in test_cases["isomorfos"]:
             run_tests1(i)
-    
+
     elif tests == "nao isomorfos":
         for i in test_cases["nao isomorfos"]:
+            run_tests1(i)
+
+    elif tests == "gerados":
+        for i in test_cases["gerados"]:
             run_tests1(i)
 
     elif tests ==  "all":
         run_tests("isomorfos")
         run_tests("nao isomorfos")
+        run_tests("gerados")
 
 def run_tests1(tests=None):
     if tests == "g27":
@@ -248,12 +263,31 @@ def run_tests1(tests=None):
 
     elif tests == "g512n":
         for i in range(len(ga512) - 1):
-            info[tests][i] = test(ga512[i], gb512[i+1], i)
+            test(ga512[i], gb512[i+1], i)
 
     elif tests == "g729n":
         for i in range(len(ga729) - 1):
-            info[tests][i] = test(ga729[i], gb729[i+1], i)
-     
+            test(ga729[i], gb729[i+1], i)
+    elif tests == "generate32":
+        graph1, graph2 = generate_isomorphic_graphs(32)
+        for i in range(1, 2):
+            info[tests][i] = test(graph1, graph2, i, tests)
+    elif tests == "generate64":
+        graph1, graph2 = generate_isomorphic_graphs(64)
+        for i in range(1, 2):
+            info[tests][i] = test(graph1, graph2, i, tests)
+    elif tests == "generate128":
+        graph1, graph2 = generate_isomorphic_graphs(128)
+        for i in range(1, 2):
+            info[tests][i] = test(graph1, graph2, i, tests)
+    elif tests == "generate256":
+        graph1, graph2 = generate_isomorphic_graphs(256)
+        for i in range(1, 2):
+            info[tests][i] = test(graph1, graph2, i, tests)
+    elif tests == "generate512":
+        graph1, graph2 = generate_isomorphic_graphs(512)
+        for i in range(1, 2):
+            info[tests][i] = test(graph1, graph2, i, tests)
     else:
         print("argumento invalido")
 
@@ -296,15 +330,21 @@ with open("filename", "w") as f:
     if tests == "isomorfos":
         for test in test_cases["isomorfos"]:
             write_to_file(test)
-    
+
     elif tests == "nao isomorfos":
         for test in test_cases["nao isomorfos"]:
+            write_to_file(test)
+
+    elif tests == "gerados":
+        for test in test_cases["gerados"]:
             write_to_file(test)
 
     elif tests == "all":
         for test in test_cases["isomorfos"]:
             write_to_file(test)
         for test in test_cases["nao isomorfos"]:
+            write_to_file(test)
+        for test in test_cases["gerados"]:
             write_to_file(test)
     else:
         write_to_file(test)
