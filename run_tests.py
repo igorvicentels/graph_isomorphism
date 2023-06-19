@@ -98,7 +98,7 @@ for i in range(5):
 
 # 343 vertices
 ga343 = []
-for i in range(5):
+for i in range(2):
     n = "%02d" % (i,)
     with open(f"data/iso_m3Dr2_m343.A{n}", "rb") as file:
         read_graph(file, g)
@@ -106,7 +106,7 @@ for i in range(5):
         g = []
 
 gb343 = []
-for i in range(5):
+for i in range(2):
     n = "%02d" % (i,)
     with open(f"data/iso_m3Dr2_m343.B{n}", "rb") as file:
         read_graph(file, g)
@@ -115,7 +115,7 @@ for i in range(5):
 
 # 512 vertices
 ga512 = []
-for i in range(5):
+for i in range(2):
     n = "%02d" % (i,)
     with open(f"data/iso_m3Dr2_m512.A{n}", "rb") as file:
         read_graph(file, g)
@@ -123,7 +123,7 @@ for i in range(5):
         g = []
 
 gb512 = []
-for i in range(5):
+for i in range(2):
     n = "%02d" % (i,)
     with open(f"data/iso_m3Dr2_m512.B{n}", "rb") as file:
         read_graph(file, g)
@@ -132,7 +132,7 @@ for i in range(5):
 
 # 729 vertices
 ga729 = []
-for i in range(5):
+for i in range(2):
     n = "%02d" % (i,)
     with open(f"data/iso_m3Dr2_m729.A{n}", "rb") as file:
         read_graph(file, g)
@@ -140,7 +140,7 @@ for i in range(5):
         g = []
 
 gb729 = []
-for i in range(5):
+for i in range(2):
     n = "%02d" % (i,)
     with open(f"data/iso_m3Dr2_m729.B{n}", "rb") as file:
         read_graph(file, g)
@@ -248,11 +248,11 @@ def run_tests1(tests=None):
 
     elif tests == "g512n":
         for i in range(len(ga512) - 1):
-            test(ga512[i], gb512[i+1], i)
+            info[tests][i] = test(ga512[i], gb512[i+1], i)
 
     elif tests == "g729n":
         for i in range(len(ga729) - 1):
-            test(ga729[i], gb729[i+1], i)
+            info[tests][i] = test(ga729[i], gb729[i+1], i)
      
     else:
         print("argumento invalido")
@@ -308,10 +308,3 @@ with open("filename", "w") as f:
             write_to_file(test)
     else:
         write_to_file(test)
-
-
-
-
-# n = 15
-# s = "%02d" % (n,)
-# print(s)

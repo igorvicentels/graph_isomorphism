@@ -3,34 +3,46 @@ Grupo de testes: g27
 
 Número de testes: 20
 Número de acertos: 20
-Tempo médio: 16.58787727355957 ms
+Tempo médio: 9.087347984313965 ms
 -------------------------------------------
 Grupo de testes: g64
 
 Número de testes: 20
 Número de acertos: 20
-Tempo médio: 211.66292428970337 ms
+Tempo médio: 118.05953979492188 ms
 -------------------------------------------
 Grupo de testes: g125
 
-Número de testes: 10
-Número de acertos: 10
-Tempo médio: 1192.663311958313 ms
+Número de testes: 20
+Número de acertos: 20
+Tempo médio: 876.244843006134 ms
+-------------------------------------------
+Grupo de testes: g216
+
+Número de testes: 20
+Número de acertos: 20
+Tempo médio: 4590.385031700134 ms
 -------------------------------------------
 Grupo de testes: g27n [NÂO ISOMORFOS]
 
 Número de testes: 19
 Número de acertos: 16
-Tempo médio: 9.441626699347244 ms
+Tempo médio: 8.049136713931436 ms
 -------------------------------------------
 Grupo de testes: g64n [NÂO ISOMORFOS]
 
 Número de testes: 19
 Número de acertos: 18
-Tempo médio: 145.73604182193154 ms
+Tempo médio: 123.20630173934133 ms
 -------------------------------------------
 Grupo de testes: g125n [NÂO ISOMORFOS]
 
-Número de testes: 9
-Número de acertos: 9
-Tempo médio: 1123.84385532803 ms
+Número de testes: 19
+Número de acertos: 19
+Tempo médio: 885.5551794955605 ms
+-------------------------------------------
+Grupo de testes: g216n [NÂO ISOMORFOS]
+
+Número de testes: 19
+Número de acertos: 19
+Tempo médio: 4806.938836449071 ms
