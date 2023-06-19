@@ -2,6 +2,14 @@ import struct
 import sys
 from ullmann import *
 
+# todo: DELETE
+def transpose(matrix):
+    # Transpose O(N*N)
+    size = len(matrix)
+    for i in range(size):
+        for j in range(i+1, size):
+            matrix[j][i],matrix[i][j] = matrix[i][j],matrix[j][i]
+
 def read_graph(file, matrix):
     # Read the number of nodes
     nodes = struct.unpack('<H', file.read(2))[0]
@@ -26,28 +34,30 @@ def read_graph(file, matrix):
     return nodes
 
 # Example usage
-matrix = []
+matrix1 = []
 with open("iso_m3Dr2_s27.B01", "rb") as file:
-    num_nodes = read_graph(file, matrix)
-    print("Number of nodes:", num_nodes)
-    print("Adjacency matrix:")
-    for i in range(num_nodes):
-        for j in range(num_nodes):
-            print(matrix[i][j], end=" ")
-        print()
+    num_nodes = read_graph(file, matrix1)
+    # print("Number of nodes:", num_nodes)
+    # print("Adjacency matrix:")
+    # for i in range(num_nodes):
+    #     for j in range(num_nodes):
+    #         print(matrix1[i][j], end=" ")
+    #     print()
 
 g1 = Graph(27)
-g1.graph = matrix
+g1.graph = matrix1
 
-matrix = []
+matrix2 = []
 with open("iso_m3Dr2_s27.B01", "rb") as file:
-    num_nodes = read_graph(file, matrix)
+    num_nodes = read_graph(file, matrix2)
 
 g2 = Graph(27)
-g2.graph = matrix
+g2.graph = matrix2
+
+print("aaaaaaaaaaaa", matrix1 == matrix2)
 
 test_cases = {
-    1:  (g1,   g1),
+    1:  (g1,   g2),
 }
 
 test_cases2 = {

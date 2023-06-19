@@ -36,7 +36,6 @@ class Graph:
 
     def is_safe(self, v, pos, path):
         # Verifica se é seguro adicionar o vértice v ao caminho em posição pos
-        print(path)
         if self.graph[path[pos-1]][v] == 0:
             return False
 
@@ -64,10 +63,14 @@ class Graph:
         return False
 
     def is_isomorphic(self, g2):
+        print(self.graph)
+        print()
+        print(g2.graph)
         # Verifica se dois grafos são isomorfos
         if self.V != g2.V:
             return False
 
+        print(1)
         # Inicializa o vetor de caminho com -1
         path = [-1] * self.V
 
