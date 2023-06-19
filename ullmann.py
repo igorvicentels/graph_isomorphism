@@ -1,75 +1,155 @@
-# Pseudocódigo
+import copy
 
-# 1. Inicialize o vetor de caminho `path` com -1.
-# 2. Chame a função `isomorph(path, 1)` para verificar a isomorfia.
-# 3. Na função `isomorph(path, pos)`, faça o seguinte:
-#    a. Se `pos` for igual ao número total de vértices no grafo, retorne True.
-#    b. Para cada vértice `v` no grafo 2:
-#       - Verifique se é seguro adicionar o vértice `v` ao caminho em posição `pos`.
-#       - Se for seguro, atualize o caminho e chame recursivamente `isomorph` para o próximo vértice.
-#       - Se a chamada recursiva retornar True, retorne True.
-#       - Se não, desfaça a atualização do caminho.
-#    c. Se nenhum vértice permitir um mapeamento válido, retorne False.
-# 4. Se a função `isomorph` retornar True, os grafos são isomorfos. Caso contrário, não são isomorfos.
+# Teste se grafo1 é isomorfico a algum subgrafo do grafo2
+def is_isomorphic(graph1, graph2):
+    # Cria lista para armazenar possiveis vertices equivalentes. 
+    # pos_assignments[3] = [1,4,5] significa que os vertices 1, 4 e 5 do graph2 podem ser equivalentes ao vertice 3 do graph1
+    pos_assignments = [[] for _ in graph1]
 
-# Análise da complexidade
+    # Verifica quais nós do graph1 tem grau menor que os nós do graph2 e guarda o resultado em pos_assignments 
+    for i in range(len(graph1)):
+        for j in range(len(graph2)):
+            if sum(graph1[i]) <= sum(graph2[j]):
+                pos_assignments[i].append(j)
 
-# A complexidade do algoritmo de Ullman depende do número de vértices e arestas nos grafos de entrada.
-# Tempo de Execução:
-# No pior caso, o algoritmo percorre todas as combinações possíveis de mapeamento entre os vértices dos dois grafos.
-# O número de combinações possíveis é igual a n! (fatorial de n), onde n é o número de vértices do grafo.
-# Portanto, a complexidade de tempo do algoritmo de Ullman é aproximadamente O(n!).
-# Isso faz com que o algoritmo seja impraticável para grafos grandes, pois a fatorial cresce rapidamente.
-# Espaço de memória:
-# O algoritmo utiliza espaço de memória para armazenar o caminho atualmente percorrido e o mapeamento entre os vértices dos dois grafos.
-# O espaço de memória necessário é proporcional ao número de vértices do grafo.
-# Portanto, a complexidade de espaço do algoritmo de Ullman é O(n).
-# É importante notar que o algoritmo de Ullman é um algoritmo de força bruta e, embora seja correto, sua complexidade exponencial o torna impraticável para grafos maiores. Para grafos maiores, são necessários algoritmos mais eficientes, como o algoritmo VF2 ou algoritmos baseados em técnicas avançadas, como a busca em largura (BFS) com backtracking.
+    # Refine
+    while True:
+        new_assignments = refine(graph1, graph2, pos_assignments)
+        if pos_assignments == new_assignments:
+            break
+        pos_assignments = new_assignments
 
-import random
-import time
+    mappings = []
+    return find_isomorphism(graph1, graph2, pos_assignments, mappings)
 
-class Graph:
-    def __init__(self, vertices):
-        self.V = vertices
-        self.graph = [[0 for column in range(vertices)] for row in range(vertices)]
-
-    def is_safe(self, v, pos, path):
-        # Verifica se é seguro adicionar o vértice v ao caminho em posição pos
-        if self.graph[path[pos-1]][v] == 0:
-            return False
-
-        # Verifica se o vértice já foi visitado
-        for vertex in path:
-            if vertex == v:
+# Verifica se os vizinhos de i no grafo1 podem ser mapeados para os vizinhos de j no grafo2
+def is_candidate(i, j, graph1, graph2, pos_assignments):
+    count = 0
+    # Checa se os vizinhos de i são todos candidatos de algum vertice de grafo2
+    for idx1, v1 in enumerate(graph1[i]):
+        # Caso o v1 seja adjacente a i no grafo1
+        if v1 == 1: 
+            count = 0
+            # Checa se esse vertice é candidato de algum vertice do grafo2 vizinho a j
+            for idx2, v2 in enumerate(graph2[j]): 
+                if v2 == 1:
+                    if idx2 in pos_assignments[idx1]:
+                        count += 1
+            if count == 0:
                 return False
+    return True
 
-        return True
 
-    def isomorph(self, path, pos):
-        # Caso base: se todos os vértices foram incluídos no caminho
-        if pos == self.V:
-            return True
+def refine(graph1, graph2, pos_assignments):
+    new_assignments = copy.deepcopy(pos_assignments)
+    for i in range(len(graph1)):
+        for j in new_assignments[i]:
+            if not is_candidate(i, j, graph1, graph2, new_assignments):
+                new_assignments[i].remove(j)
+    return new_assignments
 
-        # Tenta adicionar vértices ao caminho
-        for v in range(1, self.V):
-            if self.is_safe(v, pos, path):
-                path[pos] = v
+def find_isomorphism(graph1, graph2, pos_assignments, mappings):
+    a = len(mappings)
+    new_assignments = copy.deepcopy(pos_assignments)
 
-                if self.isomorph(path, pos+1):
-                    return True
+    if len(graph1) == a:
+        return mappings
 
-                path[pos] = -1
-        return False
+    for i in new_assignments[a]:
+        # Checa se algum vertice do grafo 1 ja foi mapeado para o vertice i do grafo 2 
+        if i in list(map(lambda x: x[1], mappings)):
+            continue
 
-    def is_isomorphic(self, g2):
-        # Verifica se dois grafos são isomorfos
-        if self.V != g2.V:
-            return False
+        mappings.append((a,i))
+        # Assign nó a do grafo 1 para o nó i do grafo 2
+        new_assignments[a] = [i] 
+        # Tira o no i de todos os outros possiveis nos de a
+        new_assignments = list(map(lambda x: x if x == new_assignments[a] else list(filter(lambda y: y != i, x)), new_assignments)) 
+        # aplica o procedimento de refine
+        # new_assignments = refine(graph1, graph2, new_assignments) 
 
-        print(1)
-        # Inicializa o vetor de caminho com -1
-        path = [-1] * self.V
+        # Checa se algum nó de a ficou sem possibilidades
+        has_empty_assignments = len(list(filter(lambda x: x == [], new_assignments))) > 0 
+       
+        if has_empty_assignments:
+            mappings.pop(-1)
+            new_assignments = copy.deepcopy(pos_assignments)
+            continue
 
-        return self.isomorph(path, 1)
+        result = find_isomorphism(graph1, graph2, new_assignments, mappings)
+        if result is not None:
+            return result
+
+    # if mappings:
+    #     mappings.pop(-1)
+    #     new_assignments = copy.deepcopy(pos_assignments)
+        # todo: talvez precise adicionar rollback do new_assignments
+    return None
+
+graph1 = [
+    [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1], 
+    [1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+    [0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0], 
+    [0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+    [0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+    [0, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+    [0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0], 
+    [0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0], 
+    [0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+    [0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1], 
+    [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0], 
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0], 
+    [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0], 
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0], 
+    [0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0], 
+    [0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0], 
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0], 
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0], 
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1], 
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0], 
+]
+
+
+graph2 = [
+    [0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+    [1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+    [0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+    [1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0], 
+    [0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0], 
+    [1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], 
+    [0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0], 
+    [0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], 
+    [0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0], 
+    [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1], 
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0], 
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0], 
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0], 
+    [0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0], 
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0], 
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1], 
+    [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0], 
+    [0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0], 
+    [0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0], 
+    [0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0], 
+]
+
+
+
+# printm(make_column_zero(graph2, 3, 4))
+
+# print(is_isomorphic(graph2, graph1))
+# x = [(0, 33), (0, 44), (2, 0), (2, 2), (2, 4), (2, 7), (6, 8), (7, 2), (8, 37), (9, 24), (10, 22), (11, 15), (12, 8), (13, 12), (11, 50), (15, 15), (16, 56), (17, 0), (18, 7), (19, 63), (20, 21), (21, 11), (22, 53), (23, 20), (24, 10), (25, 47), (26, 12), (27, 16), (28, 49), (29, 1), (30, 39), (31, 55), (20, 43), (33, 55), (34, 38), (35, 9), (36, 40), (37, 42), (38, 27), (17, 30), (40, 29), (41, 23), (42, 5), (42, 63), (6, 26), (45, 40), (46, 56), (47, 0), (47, 2), (47, 4), (47, 8), (47, 11), (47, 13), (47, 15), (47, 17), (47, 19), (47, 21), (47, 23), (47, 25), (47, 28), (60, 21), (61, 16), (62, 3), (63, 58)]
+# y = list(map(lambda a: a[1], x))
+# y.sort()
+# print(y)
+
+# mappings = [1,2,3,4,5,6]
+# mappings.pop(-1)
+# print(mappings)
+    
+# a = [(0, 0), (1, 1), (2, 2), (3, 4), (4, 9), (5, 5), (6, 6), (7, 3), (8, 7), (8, 8), (10, 10), (11, 18), (12, 12), (13, 13), (14, 14), (15, 20), (16, 15), (17, 16), (18, 19), (19, 21), (20, 11), (21, 24), (22, 17), (23, 25), (24, 22), (24, 23), (26, 26)]
+# a1 = list(map(lambda x: x[1], a))
+# a1.sort()
+# print(a1)
+
 

@@ -1,343 +1,317 @@
-# //////////////////////////////////////////////////////////////////////////
-# ///
-# //////////////////////////////////////////////////////////////////////////
-
-from canonical import * 
+import struct
 import sys
-import random
+import time
+from ullmann import *
 
-# Caso de teste 1
-g1 = [[0, 1, 1, 0],
-    [1, 0, 0, 1],
-    [1, 0, 0, 1],
-    [0, 1, 1, 0]]
+def read_graph(file, matrix):
+    # Read the number of nodes
+    nodes = struct.unpack('<H', file.read(2))[0]
 
-g2 = [[0, 1, 1, 0, 1],
-            [1, 0, 1, 1, 0],
-            [1, 1, 0, 0, 0],
-            [0, 1, 0, 0, 0],
-            [1, 0, 0, 0, 0]]
+    # Clean-up the matrix
+    for i in range(nodes):
+        matrix.append([0] * nodes)
 
+    # For each node i ...
+    for i in range(nodes):
+        # Read the number of edges coming out of node i
+        edges = struct.unpack('<H', file.read(2))[0]
 
-# Caso de teste 2
-g3 = [[0, 1, 1, 0, 0],
-            [1, 0, 0, 1, 0],
-            [1, 0, 0, 1, 1],
-            [0, 1, 1, 0, 1],
-            [0, 0, 1, 1, 0]]
+        # For each edge out of node i...
+        for j in range(edges):
+            # Read the destination node of the edge
+            target = struct.unpack('<H', file.read(2))[0]
 
-g4 = [[0, 1, 1, 0, 1],
-            [1, 0, 1, 1, 0],
-            [1, 1, 0, 1, 0],
-            [0, 1, 1, 0, 0],
-            [1, 0, 0, 0, 0]]
+            # Insert the edge in the adjacency matrix
+            matrix[i][target] = 1
 
+    return nodes
 
-# Caso de teste 3
-g5 = [[0, 1, 1],
-            [1, 0, 0],
-            [1, 0, 0]]
+g = []
+# 27 vertices
+ga27 = []
+for i in range(20):
+    n = "%02d" % (i,)
+    with open(f"data/iso_m3Dr2_s27.A{n}", "rb") as file:
+        read_graph(file, g)
+        ga27.append(g)
+        g = []
 
-g6 = [[0, 1, 1],
-            [1, 1, 0],
-            [1, 0, 1]]
+gb27 = []
+for i in range(20):
+    n = "%02d" % (i,)
+    with open(f"data/iso_m3Dr2_s27.B{n}", "rb") as file:
+        read_graph(file, g)
+        gb27.append(g)
+        g = []
 
+# 64 vertices
+ga64 = []
+for i in range(10):
+    n = "%02d" % (i,)
+    with open(f"data/iso_m3Dr2_s64.A{n}", "rb") as file:
+        read_graph(file, g)
+        ga64.append(g)
+        g = []
 
+gb64 = []
+for i in range(10):
+    n = "%02d" % (i,)
+    with open(f"data/iso_m3Dr2_s64.B{n}", "rb") as file:
+        read_graph(file, g)
+        gb64.append(g)
+        g = []
 
-# //////////////////////////////////////////////////////////////////////////
-# ///
-# //////////////////////////////////////////////////////////////////////////
+# 125 vertices
+ga125 = []
+for i in range(5):
+    n = "%02d" % (i,)
+    with open(f"data/iso_m3Dr2_s125.A{n}", "rb") as file:
+        read_graph(file, g)
+        ga125.append(g)
+        g = []
 
+gb125 = []
+for i in range(5):
+    n = "%02d" % (i,)
+    with open(f"data/iso_m3Dr2_s125.B{n}", "rb") as file:
+        read_graph(file, g)
+        gb125.append(g)
+        g = []
 
-# Caso de teste 4: Grafos esparsos com 6 vértices
-g7 = [[0, 1, 0, 0, 1, 0],
-            [1, 0, 0, 0, 1, 0],
-            [0, 0, 0, 1, 0, 0],
-            [0, 0, 1, 0, 0, 1],
-            [1, 1, 0, 0, 0, 1],
-            [0, 0, 0, 1, 1, 0]]
+# 216 vertices
+ga216 = []
+for i in range(5):
+    n = "%02d" % (i,)
+    with open(f"data/iso_m3Dr2_m216.A{n}", "rb") as file:
+        read_graph(file, g)
+        ga216.append(g)
+        g = []
 
-g8 = [[0, 0, 0, 1, 0, 0],
-            [0, 0, 1, 0, 1, 0],
-            [0, 1, 0, 0, 0, 0],
-            [1, 0, 0, 0, 0, 0],
-            [0, 1, 0, 0, 0, 1],
-            [0, 0, 0, 0, 1, 0]]
-
-# Caso de teste 5: Grafos esparsos com 8 vértices
-g9 = [[0, 1, 0, 0, 0, 0, 0, 0],
-            [1, 0, 0, 0, 0, 0, 0, 1],
-            [0, 0, 0, 1, 0, 0, 0, 0],
-            [0, 0, 1, 0, 1, 0, 0, 0],
-            [0, 0, 0, 1, 0, 1, 0, 0],
-            [0, 0, 0, 0, 1, 0, 1, 0],
-            [0, 0, 0, 0, 0, 1, 0, 0],
-            [0, 1, 0, 0, 0, 0, 0, 0]]
-
-g10 = [[0, 0, 0, 0, 0, 0, 1, 0],
-            [0, 0, 0, 0, 0, 1, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0],
-            [0, 0, 0, 0, 0, 1, 0, 0],
-            [0, 0, 1, 0, 0, 0, 0, 1],
-            [0, 1, 0, 1, 0, 0, 0, 0],
-            [1, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0]]
-
-
-# //////////////////////////////////////////////////////////////////////////
-# ///
-# //////////////////////////////////////////////////////////////////////////
-
-
-# Caso de teste 6: Grafos densos com 5 vértices
-g11 = [[0, 1, 1, 1, 1],
-            [1, 0, 1, 1, 1],
-            [1, 1, 0, 1, 1],
-            [1, 1, 1, 0, 1],
-            [1, 1, 1, 1, 0]]
-
-g12 = [[0, 1, 1, 1, 1],
-            [1, 0, 1, 1, 1],
-            [1, 1, 0, 1, 1],
-            [1, 1, 1, 0, 1],
-            [1, 1, 1, 1, 0]]
+gb216 = []
+for i in range(5):
+    n = "%02d" % (i,)
+    with open(f"data/iso_m3Dr2_m216.B{n}", "rb") as file:
+        read_graph(file, g)
+        gb216.append(g)
+        g = []
 
 
-# Caso de teste 7: Grafos densos com 6 vértices
-g13 = [[0, 1, 1, 1, 1, 1],
-            [1, 0, 1, 1, 1, 1],
-            [1, 1, 0, 1, 1, 1],
-            [1, 1, 1, 0, 1, 1],
-            [1, 1, 1, 1, 0, 1],
-            [1, 1, 1, 1, 1, 0]]
+# 343 vertices
+ga343 = []
+for i in range(5):
+    n = "%02d" % (i,)
+    with open(f"data/iso_m3Dr2_m343.A{n}", "rb") as file:
+        read_graph(file, g)
+        ga343.append(g)
+        g = []
 
-g14 = [[0, 1, 0, 1, 1, 0],
-            [1, 0, 1, 1, 1, 1],
-            [0, 1, 0, 1, 1, 0],
-            [1, 1, 1, 0, 1, 1],
-            [1, 1, 1, 1, 0, 1],
-            [0, 1, 0, 1, 1, 0]]
+gb343 = []
+for i in range(5):
+    n = "%02d" % (i,)
+    with open(f"data/iso_m3Dr2_m343.B{n}", "rb") as file:
+        read_graph(file, g)
+        gb343.append(g)
+        g = []
 
+# 512 vertices
+ga512 = []
+for i in range(5):
+    n = "%02d" % (i,)
+    with open(f"data/iso_m3Dr2_m512.A{n}", "rb") as file:
+        read_graph(file, g)
+        ga512.append(g)
+        g = []
 
-# //////////////////////////////////////////////////////////////////////////
-# ///
-# //////////////////////////////////////////////////////////////////////////
+gb512 = []
+for i in range(5):
+    n = "%02d" % (i,)
+    with open(f"data/iso_m3Dr2_m512.B{n}", "rb") as file:
+        read_graph(file, g)
+        gb512.append(g)
+        g = []
 
+# 729 vertices
+ga729 = []
+for i in range(5):
+    n = "%02d" % (i,)
+    with open(f"data/iso_m3Dr2_m729.A{n}", "rb") as file:
+        read_graph(file, g)
+        ga729.append(g)
+        g = []
 
-# Caso de teste 8: Grafos regulares com 4 vértices e grau 2
-g15 = [[0, 1, 1, 0],
-            [1, 0, 0, 1],
-            [1, 0, 0, 1],
-            [0, 1, 1, 0]]
+gb729 = []
+for i in range(5):
+    n = "%02d" % (i,)
+    with open(f"data/iso_m3Dr2_m729.B{n}", "rb") as file:
+        read_graph(file, g)
+        gb729.append(g)
+        g = []
 
-g16 = [[0, 1, 1, 0],
-            [1, 0, 1, 0],
-            [1, 1, 0, 0],
-            [0, 0, 0, 0]]
-
-
-# Caso de teste 9: Grafos regulares com 5 vértices e grau 3
-g17 = [[0, 1, 1, 1, 0],
-            [1, 0, 1, 0, 1],
-            [1, 1, 0, 1, 0],
-            [1, 0, 1, 0, 1],
-            [0, 1, 0, 1, 0]]
-
-g18 = [[0, 0, 0, 1, 1],
-            [0, 0, 1, 0, 1],
-            [0, 1, 0, 1, 0],
-            [1, 0, 1, 0, 0],
-            [1, 1, 0, 0, 0]]
-
-
-
-# //////////////////////////////////////////////////////////////////////////
-# ///
-# //////////////////////////////////////////////////////////////////////////
-
-
-# Função para gerar um grafo aleatório com n vértices e densidade d
-def generate_random_graph(n, density):
-    g = [[0 for column in range(n)] for row in range(n)]
-    for i in range(n):
-        for j in range(i+1, n):
-            if random.random() < density:
-                g[i][j] = 1
-                g[j][i] = 1
-    return g
-
-# Caso de teste 10: Grafo aleatório com 6 vértices e densidade 0.5
-g19 = generate_random_graph(6, 0.5)
-g20 = generate_random_graph(6, 0.5)
-
-
-# Caso de teste 11: Grafo aleatório com 8 vértices e densidade 0.3
-g21 = generate_random_graph(8, 0.3)
-g22 = generate_random_graph(8, 0.3)
-
-g23 = [
-    [0, 1, 0, 0, 1],
-    [1, 0, 1, 0, 0],
-    [0, 1, 0, 1, 0],
-    [0, 0, 1, 0, 1],
-    [1, 0, 0, 1, 0],
-]
-
-g24 = [
-    [0, 0, 0, 1, 1],
-    [0, 0, 1, 1, 0],
-    [0, 1, 0, 0, 1],
-    [1, 1, 0, 0, 0],
-    [1, 0, 1, 0, 0],
-]
-  
-g25 = [
-    [0, 0, 0, 1, 1, 0, 0, 0, 0, 1],
-    [0, 0, 1, 1, 0, 0, 1, 0, 0, 0],
-    [0, 1, 0, 0, 1, 1, 0, 0, 0, 0],
-    [1, 1, 0, 0, 0, 0, 0, 1, 0, 0],
-    [1, 0, 1, 0, 0, 0, 0, 0, 1, 0],
-    [0, 0, 1, 0, 0, 0, 1, 0, 1, 0],
-    [0, 1, 0, 0, 0, 1, 0, 1, 0, 0],
-    [0, 0, 0, 1, 0, 0, 1, 0, 0, 1],
-    [0, 0, 0, 0, 1, 1, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 1, 1, 0],
-]
-
-g26 = [
-    [0, 0, 0, 1, 1, 0, 0, 0, 0, 1],
-    [0, 0, 1, 1, 0, 0, 1, 0, 0, 0],
-    [0, 1, 0, 0, 1, 1, 0, 0, 0, 0],
-    [1, 1, 0, 0, 0, 0, 0, 1, 0, 0],
-    [1, 0, 1, 0, 0, 0, 0, 0, 1, 0],
-    [0, 0, 1, 0, 0, 0, 0, 1, 0, 1],
-    [0, 1, 0, 0, 0, 0, 0, 0, 1, 1],
-    [0, 0, 0, 1, 0, 1, 0, 0, 1, 0],
-    [0, 0, 0, 0, 1, 0, 1, 1, 0, 0],
-    [1, 0, 0, 0, 0, 1, 1, 0, 0, 0],
-]
-
-g27 = [
-    [0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
-    [1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0],
-    [0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
-    [1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
-    [0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0],
-    [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1],
-    [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1],
-    [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0],
-    [0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0],
-  ]
-
-g28 = [
-    [0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
-    [1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
-    [0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-    [0, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0],
-    [0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0],
-    [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1],
-    [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0],
-  ]
-
-
-test_cases = {
-    1:  (g1,   g2),
-    2:  (g3,   g4),
-    3:  (g5,   g6),
-    4:  (g7,   g8),
-    5:  (g9,  g10),
-    6:  (g11, g12),
-    7:  (g13, g14),
-    8:  (g15, g16),
-    9:  (g17, g18),
-    10: (g19, g20),
-    11: (g21, g22),
-    12: (g23, g24),
-    13: (g25, g26),
-    14: (g27, g28),
-}
-
-test_cases2 = {
-    'esparsos': [4, 5],
-    'densos': [6, 7],
-    'regulares': [8, 9],
-    'aleatorios': [10,11]
-}
 
 def test(g1, g2, n):
     start_time = time.time()
-    if isomorphic(g1, g2):
+    is_iso = is_isomorphic(g1, g2)
+    if  is_iso:
         print(f"------------------------------------------------------\nCaso de Teste {n}: \nOs grafos são isomorfos")
     else:
         print(f"------------------------------------------------------\nCaso de Teste {n}: \nOs grafos não são isomorfos")
 
     end_time = time.time()
 
-    if n in test_cases2['esparsos']:
-        print(f"Os grafos são esparsos com {len(g1)} vértices")
-
-    elif n in test_cases2['densos']:
-        print(f"Os grafos são densos com {len(g1)} vértices")
-
-    elif n in test_cases2['regulares']:
-        print(f"Os grafos são regulares com {len(g1)} vértices")
-
-    else:
-        print(f"Os grafos têm {len(g1)} vértices")
-
     print("Tempo de execução em ms: ", (end_time - start_time)*1000)
 
+    return [end_time - start_time, True if is_iso else False]
 
-def run_tests(tests=None):
-    if tests == "":
-        for i in test_cases:
-            run_tests(i)
+test_cases = {
+    "isomorfos": ["g27", "g64", "g125", "g216", "g343", "g512", "g729"],
+    "nao isomorfos": ["g27n", "g64n", "g125n", "g216n", "g343n", "g512n", "g729n"]
+}
 
-    elif tests in test_cases2:
-        for i in test_cases2[tests]:
-            run_tests(i)
+info = {
+    "g27": {},
+    "g64": {},
+    "g125": {},
+    "g216": {},
+    "g343": {},
+    "g512": {},
+    "g729": {},
+    "g27n": {},
+    "g64n": {},
+    "g125n": {},
+    "g216n": {},
+    "g343n": {},
+    "g512n": {},
+    "g729n": {},
+}
 
-    elif type(tests) == int:
-        g1, g2 = test_cases[tests]
-        test(g1, g2, tests)
+def run_tests(tests):
+    if tests == "isomorfos":
+        for i in test_cases["isomorfos"]:
+            run_tests1(i)
     
-    elif tests.isnumeric():
-        g1, g2 = test_cases[int(tests)]
-        test(g1, g2, tests)
+    elif tests == "nao isomorfos":
+        for i in test_cases["nao isomorfos"]:
+            run_tests1(i)
+
+    elif tests ==  "all":
+        run_tests("isomorfos")
+        run_tests("nao isomorfos")
+
+def run_tests1(tests=None):
+    if tests == "g27":
+        for i in range(len(ga27)):
+            info[tests][i] = test(ga27[i], gb27[i], i)
+
+    elif tests == "g64":
+        for i in range(len(ga64)):
+            info[tests][i] = test(ga64[i], gb64[i], i)
+
+    elif tests == "g125":
+        for i in range(len(ga125)):
+            info[tests][i] = test(ga125[i], gb125[i], i)
+
+    elif tests == "g216":
+        for i in range(len(ga216)):
+            info[tests][i] = test(ga216[i], gb216[i], i)
+
+    elif tests == "g343":
+        for i in range(len(ga343)):
+            info[tests][i] = test(ga343[i], gb343[i], i)
+
+    elif tests == "g512":
+        for i in range(len(ga512)):
+            info[tests][i] = test(ga512[i], gb512[i], i)
+
+    elif tests == "g729":
+        for i in range(len(ga729)):
+            info[tests][i] = test(ga729[i], gb729[i], i)
+
+    elif tests == "g27n":
+        for i in range(len(ga27) - 1):
+            info[tests][i] = test(ga27[i], gb27[i+1], i)
+
+    elif tests == "g64n":
+        for i in range(len(ga64) - 1):
+            info[tests][i] = test(ga64[i], gb64[i+1], i)
+
+    elif tests == "g125n":
+        for i in range(len(ga125) - 1):
+            info[tests][i] = test(ga125[i], gb125[i+1], i)
+
+    elif tests == "g216n":
+        for i in range(len(ga216) - 1):
+            info[tests][i] = test(ga216[i], gb216[i+1], i)
+
+    elif tests == "g343n":
+        for i in range(len(ga343) - 1):
+            info[tests][i] = test(ga343[i], gb343[i+1], i)
+
+    elif tests == "g512n":
+        for i in range(len(ga512) - 1):
+            test(ga512[i], gb512[i+1], i)
+
+    elif tests == "g729n":
+        for i in range(len(ga729) - 1):
+            test(ga729[i], gb729[i+1], i)
      
-    elif tests == 'bench':
-        n = 100
-        while n < 20000:
-            g1, g2 = generate_isomorphic_graphs(n)
-            test(g1, g2, n)
-            n = n * 2
     else:
         print("argumento invalido")
 
 
+    sum_time = 0
+    for item in info[tests]:
+        sum_time += info[tests][item][0]
+
+    n_iso = 0
+    for item in info[tests]:
+        n_iso += info[tests][item][1]
+
+    temp_m = (sum_time / (len(info[tests]))) * 1000
+    info[tests]["n_tests"] = len(info[tests])
+    info[tests]["time"] = temp_m
+    info[tests]["n_iso"] = n_iso
+
+
+def write_to_file(tests):
+    n_tests = info[tests]['n_tests']
+    n_acertos = info[tests]["n_iso"] if tests[-1] != "n" else  n_tests - info[tests]["n_iso"]
+
+    s = "-------------------------------------------\n"
+    if tests[-1] == "n":
+        s += f"Grupo de testes: {tests} [NÂO ISOMORFOS]\n\n"
+    else:
+        s += f"Grupo de testes: {tests}\n\n"
+
+    s += f"Número de testes: {n_tests}\n"
+    s += f"Número de acertos: {n_acertos}\n"
+    s += f"Tempo médio: {info[tests]['time']} ms\n"
+    
+    f.write(s)
+
 tests = sys.argv[1] if len(sys.argv) == 2 else ""
+
 run_tests(tests)
+
+with open("filename", "w") as f:
+    if tests == "isomorfos":
+        for test in test_cases["isomorfos"]:
+            write_to_file(test)
+    
+    elif tests == "nao isomorfos":
+        for test in test_cases["nao isomorfos"]:
+            write_to_file(test)
+
+    elif tests == "all":
+        for test in test_cases["isomorfos"]:
+            write_to_file(test)
+        for test in test_cases["nao isomorfos"]:
+            write_to_file(test)
+    else:
+        write_to_file(test)
+
+
+
+
+# n = 15
+# s = "%02d" % (n,)
+# print(s)
