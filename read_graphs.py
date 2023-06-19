@@ -28,17 +28,13 @@ def read_graph(file, matrix):
     return nodes
 
 # Example usage
-matrix1 = []
-with open("data/iso_m3Dr2_s27.A00", "rb") as file:
-    num_nodes = read_graph(file, matrix1)
+g1 = []
+with open("data/iso_m3Dr2_s64.A01", "rb") as file:
+    num_nodes = read_graph(file, g1)
 
-g1 = matrix1
-
-matrix2 = []
-with open("data/iso_m3Dr2_s27.B02", "rb") as file:
-    num_nodes = read_graph(file, matrix2)
-
-g2 = matrix2
+g2 = []
+with open("data/iso_m3Dr2_s64.B00", "rb") as file:
+    num_nodes = read_graph(file, g2)
 
 test_cases = {
     1:  (g1,   g2),

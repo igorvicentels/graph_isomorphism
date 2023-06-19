@@ -57,8 +57,10 @@ def find_isomorphism(graph1, graph2, pos_assignments, mappings):
         return mappings
 
     for i in new_assignments[a]:
+        # Checa se algum vertice do grafo 1 ja foi mapeado para o vertice i do grafo 2 
         if i in list(map(lambda x: x[1], mappings)):
             continue
+
         mappings.append((a,i))
         # Assign nó a do grafo 1 para o nó i do grafo 2
         new_assignments[a] = [i] 
