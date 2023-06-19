@@ -50,7 +50,6 @@ def refine(graph1, graph2, pos_assignments):
 
 def find_isomorphism(graph1, graph2, pos_assignments, mappings):
     a = len(mappings)
-    print(mappings)
     new_assignments = copy.deepcopy(pos_assignments)
 
     if len(graph1) == a:
