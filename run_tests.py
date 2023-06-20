@@ -212,6 +212,9 @@ def run_tests(tests):
         run_tests("nao isomorfos")
         run_tests("gerados")
 
+    else:
+        run_tests1(tests)
+
 def run_tests1(tests=None):
     if tests == "g27":
         for i in range(len(ga27)):
@@ -347,4 +350,4 @@ with open("filename", "w") as f:
         for test in test_cases["gerados"]:
             write_to_file(test)
     else:
-        write_to_file(test)
+        write_to_file(tests)
