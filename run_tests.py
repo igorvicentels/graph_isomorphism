@@ -329,7 +329,7 @@ tests = sys.argv[1] if len(sys.argv) == 2 else ""
 
 run_tests(tests)
 
-with open("filename", "w") as f:
+with open("results.txt", "w") as f:
     if tests == "isomorfos":
         for test in test_cases["isomorfos"]:
             write_to_file(test)
